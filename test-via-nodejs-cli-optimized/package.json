@@ -1,0 +1,20 @@
+{
+    "name": "sqlite-read-bench-nodejs",
+    "version": "1.0.0",
+    "description": "SQLite concurrent read performance benchmark for Node.js",
+    "main": "sqlite_read_bench.js",
+    "scripts": {
+        "bench": "node sqlite_read_bench.js"
+    },
+    "dependencies": {
+        "better-sqlite3": "^11.0.0"
+    },
+    "keywords": [
+        "sqlite",
+        "benchmark",
+        "performance",
+        "concurrent"
+    ],
+    "author": "",
+    "license": "MIT"
+}
