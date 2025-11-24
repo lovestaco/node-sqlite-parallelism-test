@@ -1,10 +1,29 @@
-Testing Node.js SQLite benchmark...
-
-Creating DB at test_quick.sqlite3 with 100 rows (x in [0,1000))
-Running benchmark with 2 processes × 4 threads
-Total threads: 8
-Queries per thread: 50
-Total queries: 400
+ode test-via-nodejs-cli/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 16 --queries-per-thread 175 --pin-cpus
+Creating DB at test_reads.sqlite3 with 2000 rows (x in [0,1000))
+Running benchmark with 2 processes × 16 threads
+Total threads: 32
+Queries per thread: 175
+Total queries: 5600
 Attempting to pin processes to CPUs: [0, 1]
 
-✗ Test timed out (script is hanging)
+--- Per-process stats ---
+Process 1:
+  Wall time: 2.4955 s
+  Queries:   2800
+  QPS:       1122.04
+Process 0:
+  Wall time: 2.5252 s
+  Queries:   2800
+  QPS:       1108.84
+
+--- Per-thread QPS (over all processes) ---
+Threads total: 32
+Min QPS:   257.60
+Median QPS:301.78
+Mean QPS:  303.17
+Max QPS:   349.17
+
+--- Global stats ---
+Total queries:      5600
+Global wall time:   2.6224 s (includes process startup/teardown)
+Global effective QPS: 2135.47

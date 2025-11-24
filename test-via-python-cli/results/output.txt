@@ -1,0 +1,29 @@
+python test-via-python-cli/sqlite_read_bench.py   --db-path test_reads.sqlite3   --rows 2000   --processes 2   --threads-per-proc 16   --queries-per-thread 175   --pin-cpus
+Creating DB at test_reads.sqlite3 with 2000 rows (x in [0,1000))
+Running benchmark with 2 processes × 16 threads
+Total threads: 32
+Queries per thread: 175
+Total queries: 5600
+Attempting to pin processes to CPUs: [0, 1]
+
+--- Per-process stats ---
+Process 0:
+  Wall time: 0.6250 s
+  Queries:   2800
+  QPS:       4479.90
+Process 1:
+  Wall time: 0.6288 s
+  Queries:   2800
+  QPS:       4452.77
+
+--- Per-thread QPS (over all processes) ---
+Threads total: 32
+Min QPS:   527.48
+Median QPS:644.45
+Mean QPS:  691.83
+Max QPS:   1088.22
+
+--- Global stats ---
+Total queries:      5600
+Global wall time:   0.6530 s (includes process startup/teardown)
+Global effective QPS: 8575.18
