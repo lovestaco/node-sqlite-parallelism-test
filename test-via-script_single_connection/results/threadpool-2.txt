@@ -1,7 +1,0 @@
-libuv thread pool size: 2 (default: 4, can be set via UV_THREADPOOL_SIZE env var)
-CPU cores available: 8
-
-CONCURRENCY= 1: 2000 queries complete in 6816 ms,  3.408 ms per SELECT, event loop utilisation=50%, median libuv thread pool queue latency = 0.651 ms
-CONCURRENCY= 3: 2000 queries complete in 4121 ms,  2.061 ms per SELECT, event loop utilisation=72%, median libuv thread pool queue latency = 7.580 ms
-CONCURRENCY=10: 2000 queries complete in 4502 ms,  2.251 ms per SELECT, event loop utilisation=70%, median libuv thread pool queue latency = 38.522 ms
-CONCURRENCY=20: 2000 queries complete in 5578 ms,  2.789 ms per SELECT, event loop utilisation=60%, median libuv thread pool queue latency = 106.505 ms

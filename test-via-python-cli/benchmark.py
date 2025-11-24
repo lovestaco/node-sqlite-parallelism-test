@@ -27,8 +27,11 @@ def run_query(_):
     # Suppress output to avoid console spam
     subprocess.run(["sqlite3", DB_NAME, QUERY_SQL], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-def benchmark(concurrency):
-    print(f"--- Testing Concurrency: {concurrency} ---")
+def benchmark(concurrency, file_handle):
+    msg = f"--- Testing Concurrency: {concurrency} ---"
+    print(msg)
+    file_handle.write(msg + "\n")
+    
     start_time = time.time()
     
     with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as executor:
@@ -40,16 +43,22 @@ def benchmark(concurrency):
             
     end_time = time.time()
     duration = end_time - start_time
-    print(f"Concurrency {concurrency}: {QUERIES} queries in {duration:.3f} seconds ({duration/QUERIES*1000:.3f} ms/query)")
+    result_msg = f"Concurrency {concurrency}: {QUERIES} queries in {duration:.3f} seconds ({duration/QUERIES*1000:.3f} ms/query)"
+    print(result_msg)
+    file_handle.write(result_msg + "\n")
 
 def main():
     setup_db()
     
-    # Concurrency levels to test
-    levels = [1, 3, 10, 20]
+    # Ensure results directory exists
+    os.makedirs("results", exist_ok=True)
     
-    for level in levels:
-        benchmark(level)
+    # Concurrency levels to test (limited to CPU count as requested)
+    levels = [1, 2]
+    
+    with open("results/benchmark.txt", "w") as f:
+        for level in levels:
+            benchmark(level, f)
 
 if __name__ == "__main__":
     main()

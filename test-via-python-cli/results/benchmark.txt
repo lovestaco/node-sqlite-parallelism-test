@@ -1,9 +1,4 @@
-Database test.db created with 2000 rows.
 --- Testing Concurrency: 1 ---
-Concurrency 1: 2000 queries in 8.460 seconds (4.230 ms/query)
---- Testing Concurrency: 3 ---
-Concurrency 3: 2000 queries in 2.345 seconds (1.173 ms/query)
---- Testing Concurrency: 10 ---
-Concurrency 10: 2000 queries in 1.634 seconds (0.817 ms/query)
---- Testing Concurrency: 20 ---
-Concurrency 20: 2000 queries in 1.723 seconds (0.861 ms/query)
+Concurrency 1: 2000 queries in 8.533 seconds (4.266 ms/query)
+--- Testing Concurrency: 2 ---
+Concurrency 2: 2000 queries in 3.156 seconds (1.578 ms/query)

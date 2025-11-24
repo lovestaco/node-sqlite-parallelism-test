@@ -1,26 +1,18 @@
 {
   "name": "node-sqlite-parallelism",
   "version": "1.0.0",
-  "description": "Benchmark to reproduce node-sqlite3 thread pool blocking issue",
-  "main": "test-via-script/test.js",
+  "description": "Test to see if node-sqlite3 can run queries in parallel",
+  "main": "index.js",
   "scripts": {
-    "test-single": "node test-via-script_single_connection/test.js",
-    "benchmark-single": "node test-via-script_single_connection/benchmark.js",
-    "benchmark-threadpools": "bash test-via-script_single_connection/run-thread-pool-tests.sh",
-    "compare-single": "bash test-via-script_single_connection/compare-results.sh",
-    "benchmark-n-connection": "node test-via-script_n_connection/benchmark.js",
-    "benchmark-n-threadpools": "cd test-via-script_n_connection && bash run-thread-pool-tests.sh",
-    "compare-n": "cd test-via-script_n_connection && bash compare-results.sh"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "benchmark-single": "mkdir -p test-via-script_single_connection/results && UV_THREADPOOL_SIZE=2 node test-via-script_single_connection/benchmark.js | tee test-via-script_single_connection/results/benchmark.txt",
+    "benchmark-n-connection": "mkdir -p test-via-script_n_connection/results && UV_THREADPOOL_SIZE=2 node test-via-script_n_connection/benchmark.js | tee test-via-script_n_connection/results/benchmark.txt",
+    "benchmark-python": "cd test-via-python-cli && python3 benchmark.py",
+    "compare-all": "bash compare-all-results.sh"
   },
-  "dependencies": {
-    "sqlite3": "^5.1.6"
-  },
-  "keywords": [
-    "sqlite3",
-    "benchmark",
-    "concurrency"
-  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "sqlite3": "^5.0.2"
+  }
 }
-

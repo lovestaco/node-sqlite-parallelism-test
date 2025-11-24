@@ -1,23 +1,17 @@
 #!/bin/bash
-# Compare results from different thread pool sizes
+# Compare results
 
 OUTPUT_DIR="results"
+FILE="$OUTPUT_DIR/benchmark.txt"
 
-if [ ! -d "$OUTPUT_DIR" ]; then
-    echo "Results directory not found. Run run-thread-pool-tests.sh first."
+if [ ! -f "$FILE" ]; then
+    echo "Results file not found: $FILE"
+    echo "Run 'npm run benchmark-n-connection' first."
     exit 1
 fi
 
-echo "=== Comparison of Results by Thread Pool Size ==="
-echo "Using MULTIPLE database connections"
+echo "=== Results for Multiple Connections ==="
+echo "File: $FILE"
 echo ""
 
-for size in 2 3 8; do
-    file="$OUTPUT_DIR/threadpool-${size}.txt"
-    if [ -f "$file" ]; then
-        echo "--- Thread Pool Size: $size ---"
-        grep "CONCURRENCY=" "$file" || echo "No results found"
-        echo ""
-    fi
-done
-
+grep "CONCURRENCY=" "$FILE" || echo "No results found"
