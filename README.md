@@ -1,48 +1,169 @@
-# node-sqlite3 Parallelism Benchmark
+# SQLite Parallelism Benchmark
 
-This project reproduces the issue described in [node-sqlite3 issue #1395](https://github.com/TryGhost/node-sqlite3/issues/1395) where parallel queries block the nodejs/libuv worker pool.
+Performance comparison of SQLite read operations across different Node.js implementations and Python.
 
-## Setup
+## Quick Start
 
 ```bash
-npm install
+# Install all dependencies
+make install
+
+# Run Python benchmark (reference)
+python test-via-python-cli/sqlite_read_bench.py --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 2 --queries-per-thread 1400 --pin-cpus
+
+# Run Node.js benchmarks
+node test-via-nodejs-cli-2/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 2 --queries-per-thread 1400 --pin-cpus
 ```
 
-## Running the Benchmark
+## Implementations
 
-Run a single test with default concurrency (10):
+### Python (Reference)
+- **Location:** `test-via-python-cli/`
+- **Library:** Python's built-in `sqlite3`
+- **Architecture:** Multi-process with threads (2 processes × 2 threads)
+- **Performance:** 13,851 QPS (baseline)
+- **Command:**
+  ```bash
+  python test-via-python-cli/sqlite_read_bench.py --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 2 --queries-per-thread 1400 --pin-cpus
+  ```
+
+### Node.js Implementations
+
+#### cli: better-sqlite3 (Original)
+- **Location:** `test-via-nodejs-cli/`
+- **Library:** `better-sqlite3` (synchronous)
+- **Architecture:** Cluster processes + Worker threads
+- **Note:** Original implementation, baseline for comparison
+
+#### cli-2: better-sqlite3 with Worker Threads
+- **Location:** `test-via-nodejs-cli-2/`
+- **Library:** `better-sqlite3` (synchronous)
+- **Architecture:** Cluster processes + Worker threads (2 processes × 2 threads)
+- **Performance:** 9,687 QPS (69.9% of Python) 🏆 Best Node.js
+- **Command:**
+  ```bash
+  node test-via-nodejs-cli-2/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 2 --queries-per-thread 1400 --pin-cpus
+  ```
+
+#### cli-3: node-sqlite3 with Worker Threads
+- **Location:** `test-via-nodejs-cli-3/`
+- **Library:** `sqlite3` (TryGhost, async)
+- **Architecture:** Cluster processes + Worker threads
+- **Performance:** 7,804 QPS (56.3% of Python)
+- **Command:**
+  ```bash
+  node test-via-nodejs-cli-3/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 1 --queries-per-thread 2800 --pin-cpus
+  ```
+
+#### cli-4: node-sqlite3 without Worker Threads
+- **Location:** `test-via-nodejs-cli-4/`
+- **Library:** `sqlite3` (TryGhost, async)
+- **Architecture:** Cluster processes only (no worker threads)
+- **Performance:** 8,683 QPS (62.7% of Python)
+- **Command:**
+  ```bash
+  node test-via-nodejs-cli-4/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --processes 2 --queries-per-process 2800 --pin-cpus
+  ```
+
+#### cli-5: better-sqlite3 without Worker Threads
+- **Location:** `test-via-nodejs-cli-5/`
+- **Library:** `better-sqlite3` (synchronous)
+- **Architecture:** Cluster processes only (no worker threads)
+- **Performance:** 9,252 QPS (66.8% of Python)
+- **Command:**
+  ```bash
+  node test-via-nodejs-cli-5/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --processes 2 --queries-per-process 2800 --pin-cpus
+  ```
+
+#### cli-6: better-sqlite3 with Worker Threads (Single Process)
+- **Location:** `test-via-nodejs-cli-6/`
+- **Library:** `better-sqlite3` (synchronous)
+- **Architecture:** Single process with worker threads (no cluster)
+- **Performance:** 9,111 QPS (65.5% of Python)
+- **Command:**
+  ```bash
+  node test-via-nodejs-cli-6/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --threads 2 --queries-per-thread 2800 --pin-cpus
+  ```
+
+## Benchmark Results
+
+**Latest comprehensive results:** See [BENCHMARK_RESULTS_2CPU.md](BENCHMARK_RESULTS_2CPU.md)
+
+### Quick Summary (2 CPU Constraint)
+
+| Implementation | QPS | % of Python |
+|----------------|-----|-------------|
+| **Python** | 13,851 | 100% (baseline) |
+| **cli-2** (better-sqlite3, workers) | 9,687 | 69.9% 🥇 |
+| **cli-5** (better-sqlite3, no workers) | 9,252 | 66.8% 🥈 |
+| **cli-6** (better-sqlite3, single proc) | 9,111 | 65.5% 🥉 |
+| **cli-4** (node-sqlite3, no workers) | 8,683 | 62.7% |
+| **cli-3** (node-sqlite3, workers) | 7,804 | 56.3% |
+
+## Key Findings
+
+1. **better-sqlite3** consistently outperforms **node-sqlite3** (~10-15% faster)
+2. **2 processes × 2 threads** is optimal for most implementations
+3. **Worker threads add overhead** - simpler process-only approach is competitive
+4. **Python's multi-process architecture** provides better isolation and performance
+
+## Installation
+
 ```bash
-npm test
+make install
 ```
 
-Run the full benchmark suite with multiple concurrency levels (1, 3, 10, 20):
+This will install dependencies for all Node.js implementations.
+
+## Testing
+
+### Run All Benchmarks
+
 ```bash
-npm run benchmark
+# Python (reference)
+python test-via-python-cli/sqlite_read_bench.py --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 2 --queries-per-thread 1400 --pin-cpus
+
+# Best Node.js implementation
+node test-via-nodejs-cli-2/sqlite_read_bench.js --db-path test_reads.sqlite3 --rows 2000 --processes 2 --threads-per-proc 2 --queries-per-thread 1400 --pin-cpus
 ```
 
-Run benchmarks with different thread pool sizes (2, 3, 8) and save results:
-```bash
-npm run benchmark:threadpools
-```
+### Common Options
 
-Compare results from different thread pool sizes:
-```bash
-npm run compare
-```
+- `--db-path <path>` - Path to SQLite database file
+- `--rows <n>` - Number of rows in test database (default: 2000)
+- `--processes <n>` - Number of processes (default: 2)
+- `--threads-per-proc <n>` - Number of threads per process (for implementations with workers)
+- `--queries-per-thread <n>` - Queries each thread executes
+- `--pin-cpus` - Pin each process to a separate CPU core
 
-Results are saved in the `results/` directory:
-- `results/threadpool-2.txt` - Results with 2 thread pool threads
-- `results/threadpool-3.txt` - Results with 3 thread pool threads
-- `results/threadpool-8.txt` - Results with 8 thread pool threads
+## Architecture Comparison
 
-## Expected Results
+### Python
+- Uses `multiprocessing.Pool` for process management
+- Each process spawns `threading.Thread` instances
+- OS-level process isolation
 
-When running with concurrency levels above the default libuv thread pool size (4), you should see queue latency spikes:
+### Node.js (cli-2, cli-3)
+- Uses `cluster` module for process management
+- Each process spawns `Worker` threads
+- Similar architecture to Python
 
-- CONCURRENCY=1: Low queue latency (~0.9ms)
-- CONCURRENCY=3: Low queue latency (~1ms)
-- CONCURRENCY=10: Higher queue latency (~11ms)
-- CONCURRENCY=20: Much higher queue latency (~33ms)
+### Node.js (cli-4, cli-5)
+- Uses `cluster` module for process management
+- No worker threads - queries run directly in process
+- Simpler architecture, still competitive
 
-This demonstrates that node-sqlite3 queries are blocking libuv worker pool threads unnecessarily.
+### Node.js (cli-6)
+- Single process with `Worker` threads only
+- No cluster processes
+- More contention, but simpler setup
 
+## Requirements
+
+- Node.js >= 14
+- Python 3.x
+- Linux (for CPU pinning with `taskset`)
+
+## License
+
+MIT
