@@ -1,0 +1,38 @@
+=== Comparison of Results (Single vs Multiple Connections) ===
+
+--- Thread Pool Size: 2 ---
+Single Connection:
+CONCURRENCY= 1: 2000 queries complete in 6816 ms,  3.408 ms per SELECT, event loop utilisation=50%, median libuv thread pool queue latency = 0.651 ms
+CONCURRENCY= 3: 2000 queries complete in 4121 ms,  2.061 ms per SELECT, event loop utilisation=72%, median libuv thread pool queue latency = 7.580 ms
+CONCURRENCY=10: 2000 queries complete in 4502 ms,  2.251 ms per SELECT, event loop utilisation=70%, median libuv thread pool queue latency = 38.522 ms
+CONCURRENCY=20: 2000 queries complete in 5578 ms,  2.789 ms per SELECT, event loop utilisation=60%, median libuv thread pool queue latency = 106.505 ms
+Multiple Connections:
+CONCURRENCY= 1: 2000 queries complete in 7045 ms,  3.522 ms per SELECT, event loop utilisation=52%, median libuv thread pool queue latency = 0.660 ms
+CONCURRENCY= 3: 2000 queries complete in 2632 ms,  1.316 ms per SELECT, event loop utilisation=98%, median libuv thread pool queue latency = 5.171 ms
+CONCURRENCY=10: 2000 queries complete in 2477 ms,  1.238 ms per SELECT, event loop utilisation=100%, median libuv thread pool queue latency = 20.599 ms
+CONCURRENCY=20: 2000 queries complete in 2678 ms,  1.339 ms per SELECT, event loop utilisation=100%, median libuv thread pool queue latency = 48.589 ms
+
+--- Thread Pool Size: 3 ---
+Single Connection:
+CONCURRENCY= 1: 2000 queries complete in 7171 ms,  3.586 ms per SELECT, event loop utilisation=50%, median libuv thread pool queue latency = 0.744 ms
+CONCURRENCY= 3: 2000 queries complete in 4622 ms,  2.311 ms per SELECT, event loop utilisation=70%, median libuv thread pool queue latency = 4.563 ms
+CONCURRENCY=10: 2000 queries complete in 4430 ms,  2.215 ms per SELECT, event loop utilisation=75%, median libuv thread pool queue latency = 32.227 ms
+CONCURRENCY=20: 2000 queries complete in 5328 ms,  2.664 ms per SELECT, event loop utilisation=57%, median libuv thread pool queue latency = 93.643 ms
+Multiple Connections:
+CONCURRENCY= 1: 2000 queries complete in 6739 ms,  3.369 ms per SELECT, event loop utilisation=51%, median libuv thread pool queue latency = 0.775 ms
+CONCURRENCY= 3: 2000 queries complete in 3390 ms,  1.695 ms per SELECT, event loop utilisation=99%, median libuv thread pool queue latency = 4.931 ms
+CONCURRENCY=10: 2000 queries complete in 2781 ms,  1.391 ms per SELECT, event loop utilisation=100%, median libuv thread pool queue latency = 22.821 ms
+CONCURRENCY=20: 2000 queries complete in 2626 ms,  1.313 ms per SELECT, event loop utilisation=100%, median libuv thread pool queue latency = 46.661 ms
+
+--- Thread Pool Size: 8 ---
+Single Connection:
+CONCURRENCY= 1: 2000 queries complete in 7281 ms,  3.640 ms per SELECT, event loop utilisation=49%, median libuv thread pool queue latency = 0.742 ms
+CONCURRENCY= 3: 2000 queries complete in 4448 ms,  2.224 ms per SELECT, event loop utilisation=69%, median libuv thread pool queue latency = 0.694 ms
+CONCURRENCY=10: 2000 queries complete in 4149 ms,  2.075 ms per SELECT, event loop utilisation=75%, median libuv thread pool queue latency = 11.219 ms
+CONCURRENCY=20: 2000 queries complete in 5307 ms,  2.654 ms per SELECT, event loop utilisation=64%, median libuv thread pool queue latency = 64.711 ms
+Multiple Connections:
+CONCURRENCY= 1: 2000 queries complete in 7355 ms,  3.678 ms per SELECT, event loop utilisation=50%, median libuv thread pool queue latency = 0.721 ms
+CONCURRENCY= 3: 2000 queries complete in 3407 ms,  1.704 ms per SELECT, event loop utilisation=96%, median libuv thread pool queue latency = 4.343 ms
+CONCURRENCY=10: 2000 queries complete in 2777 ms,  1.389 ms per SELECT, event loop utilisation=100%, median libuv thread pool queue latency = 21.611 ms
+CONCURRENCY=20: 2000 queries complete in 3050 ms,  1.525 ms per SELECT, event loop utilisation=100%, median libuv thread pool queue latency = 52.254 ms
+
