@@ -15,6 +15,10 @@ def setup_db():
     # Use python's sqlite3 to populate efficiently
     con = sqlite3.connect(DB_NAME)
     cur = con.cursor()
+    
+    # Enable WAL mode for better concurrency
+    cur.execute("PRAGMA journal_mode=WAL")
+    
     cur.execute("CREATE TABLE lorem (info TEXT)")
     
     data = [("Ipsum " + str(i),) for i in range(2000)]
@@ -24,8 +28,8 @@ def setup_db():
     print(f"Database {DB_NAME} created with 2000 rows.")
 
 def run_query(_):
-    # Suppress output to avoid console spam
-    subprocess.run(["sqlite3", DB_NAME, QUERY_SQL], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # Use immutable mode for read-only queries (better concurrency)
+    subprocess.run(["sqlite3", f"file:{DB_NAME}?immutable=1", QUERY_SQL], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def benchmark(concurrency, file_handle):
     msg = f"--- Testing Concurrency: {concurrency} ---"

@@ -3,8 +3,8 @@ CPU cores available: 8
 
 Using FILE-BASED database: test.db
 Database test.db created with 2000 rows.
-CONCURRENCY= 1: 2000 queries complete in 5569 ms,  2.784 ms per SELECT, event loop utilisation=43%, median libuv thread pool queue latency = 0.392 ms
-CONCURRENCY= 2: 2000 queries complete in 3558 ms,  1.779 ms per SELECT, event loop utilisation=58%, median libuv thread pool queue latency = 3.563 ms
-CONCURRENCY= 4: 2000 queries complete in 3234 ms,  1.617 ms per SELECT, event loop utilisation=57%, median libuv thread pool queue latency = 9.666 ms
-CONCURRENCY= 8: 2000 queries complete in 3200 ms,  1.600 ms per SELECT, event loop utilisation=57%, median libuv thread pool queue latency = 21.900 ms
-CONCURRENCY=16: 2000 queries complete in 3895 ms,  1.948 ms per SELECT, event loop utilisation=55%, median libuv thread pool queue latency = 59.573 ms
+CONCURRENCY= 1: 2000 queries complete in 4943 ms,  2.471 ms per SELECT, event loop utilisation=49%, median libuv thread pool queue latency = 0.383 ms
+CONCURRENCY= 2: 2000 queries complete in 3139 ms,  1.569 ms per SELECT, event loop utilisation=61%, median libuv thread pool queue latency = 2.830 ms
+CONCURRENCY= 4: 2000 queries complete in 3828 ms,  1.914 ms per SELECT, event loop utilisation=60%, median libuv thread pool queue latency = 11.741 ms
+CONCURRENCY= 8: 2000 queries complete in 3901 ms,  1.950 ms per SELECT, event loop utilisation=64%, median libuv thread pool queue latency = 29.959 ms
+CONCURRENCY=16: 2000 queries complete in 5783 ms,  2.892 ms per SELECT, event loop utilisation=55%, median libuv thread pool queue latency = 94.562 ms

@@ -23,6 +23,9 @@ async function setupDatabase() {
   const db = new sqlite3.Database(DB_NAME);
   const run = promisify(db.run.bind(db));
 
+  // Enable WAL mode for better concurrency
+  await run("PRAGMA journal_mode=WAL");
+
   await run("CREATE TABLE lorem (info TEXT)");
 
   // db.prepare returns the statement object immediately
@@ -41,7 +44,7 @@ async function setupDatabase() {
 }
 
 async function runBenchmark(CONCURRENCY) {
-  const db = new sqlite3.Database(DB_NAME, sqlite3.OPEN_READWRITE);
+  const db = new sqlite3.Database(`file:${DB_NAME}?immutable=1`, sqlite3.OPEN_READONLY | sqlite3.OPEN_URI);
   const prepare = (sql) => new Promise((resolve, reject) => {
     const stmt = db.prepare(sql, err => {
       if (err === null)

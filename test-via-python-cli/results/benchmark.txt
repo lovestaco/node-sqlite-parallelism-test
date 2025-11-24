@@ -1,4 +1,4 @@
 --- Testing Concurrency: 1 ---
-Concurrency 1: 2000 queries in 8.533 seconds (4.266 ms/query)
+Concurrency 1: 2000 queries in 8.461 seconds (4.230 ms/query)
 --- Testing Concurrency: 2 ---
-Concurrency 2: 2000 queries in 3.156 seconds (1.578 ms/query)
+Concurrency 2: 2000 queries in 4.996 seconds (2.498 ms/query)
