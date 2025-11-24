@@ -10,16 +10,16 @@
 
 ## 1. Python (Reference Implementation)
 
-| Configuration | QPS | Notes |
-|---------------|-----|-------|
-| 2 proc × 16 threads | 13,455.94 | Default |
-| 2 proc × 8 threads | 13,266.30 | |
-| 2 proc × 4 threads | 12,822.33 | |
-| **2 proc × 2 threads** | **13,851.47** | **🏆 BEST** |
-| 2 proc × 1 thread | 13,617.52 | |
-| 1 proc × 16 threads | 10,216.08 | |
-| 1 proc × 8 threads | 10,015.17 | |
-| 1 proc × 4 threads | 9,876.52 | |
+| Configuration | Total Threads | QPS | Notes |
+|---------------|----------------|-----|-------|
+| 2 proc × 16 threads | 32 | 13,207.00 | Default (32 worker threads) |
+| 2 proc × 8 threads | 16 | 13,266.30 | |
+| 2 proc × 4 threads | 8 | 12,822.33 | |
+| **2 proc × 2 threads** | **4** | **13,851.47** | **🏆 BEST** |
+| 2 proc × 1 thread | 2 | 13,617.52 | |
+| 1 proc × 16 threads | 16 | 10,216.08 | |
+| 1 proc × 8 threads | 8 | 10,015.17 | |
+| 1 proc × 4 threads | 4 | 9,876.52 | |
 
 **Optimal Python Configuration:** 2 processes × 2 threads = **13,851.47 QPS**
 
@@ -27,16 +27,16 @@
 
 ## 2. cli-2: better-sqlite3 WITH Worker Threads
 
-| Configuration | QPS | % of Python |
-|---------------|-----|-------------|
-| 2 proc × 1 thread | 8,090.93 | 58.4% |
-| **2 proc × 2 threads** | **9,686.74** | **69.9%** 🏆 |
-| 2 proc × 3 threads | 8,589.83 | 62.0% |
-| 2 proc × 4 threads | 7,505.61 | 54.2% |
-| 2 proc × 5 threads | 7,051.62 | 50.9% |
-| 2 proc × 6 threads | 6,427.73 | 46.4% |
-| 2 proc × 8 threads | 5,558.84 | 40.1% |
-| 2 proc × 16 threads | 3,545.11 | 25.6% |
+| Configuration | Total Threads | QPS | % of Python |
+|---------------|----------------|-----|-------------|
+| 2 proc × 1 thread | 2 | 8,090.93 | 58.4% |
+| **2 proc × 2 threads** | **4** | **9,686.74** | **69.9%** 🏆 |
+| 2 proc × 3 threads | 6 | 8,589.83 | 62.0% |
+| 2 proc × 4 threads | 8 | 7,505.61 | 54.2% |
+| 2 proc × 5 threads | 10 | 7,051.62 | 50.9% |
+| 2 proc × 6 threads | 12 | 6,427.73 | 46.4% |
+| 2 proc × 8 threads | 16 | 5,558.84 | 40.1% |
+| **2 proc × 16 threads** | **32** | **3,699.16** | **26.7%** ⚠️ 32 worker threads |
 
 **Best Configuration:** 2 proc × 2 threads = **9,686.74 QPS (69.9% of Python)**
 
@@ -44,16 +44,16 @@
 
 ## 3. cli-3: node-sqlite3 WITH Worker Threads
 
-| Configuration | QPS | % of Python |
-|---------------|-----|-------------|
-| **2 proc × 1 thread** | **7,803.62** | **56.3%** 🏆 |
-| 2 proc × 2 threads | 6,993.01 | 50.5% |
-| 2 proc × 3 threads | 6,255.61 | 45.2% |
-| 2 proc × 4 threads | 5,879.77 | 42.4% |
-| 2 proc × 5 threads | 5,610.39 | 40.5% |
-| 2 proc × 6 threads | 5,243.64 | 37.8% |
-| 2 proc × 8 threads | 4,606.68 | 33.2% |
-| 2 proc × 16 threads | 3,061.44 | 22.1% |
+| Configuration | Total Threads | QPS | % of Python |
+|---------------|----------------|-----|-------------|
+| **2 proc × 1 thread** | **2** | **7,803.62** | **56.3%** 🏆 |
+| 2 proc × 2 threads | 4 | 6,993.01 | 50.5% |
+| 2 proc × 3 threads | 6 | 6,255.61 | 45.2% |
+| 2 proc × 4 threads | 8 | 5,879.77 | 42.4% |
+| 2 proc × 5 threads | 10 | 5,610.39 | 40.5% |
+| 2 proc × 6 threads | 12 | 5,243.64 | 37.8% |
+| 2 proc × 8 threads | 16 | 4,606.68 | 33.2% |
+| **2 proc × 16 threads** | **32** | **3,218.95** | **23.2%** ⚠️ 32 worker threads |
 
 **Best Configuration:** 2 proc × 1 thread = **7,803.62 QPS (56.3% of Python)**
 
@@ -114,6 +114,13 @@
 - Node.js best: 9,687 QPS (69.9% of Python)
 - Gap: ~30% slower than Python's optimal configuration
 - However, Node.js is still very competitive and practical
+
+### 5. 32 Worker Threads Configuration (2 proc × 16 threads)
+- **Python:** 13,207.00 QPS (95.3% of optimal)
+- **cli-2 (better-sqlite3):** 3,699.16 QPS (26.7% of Python) ⚠️ Poor performance
+- **cli-3 (node-sqlite3):** 3,218.95 QPS (23.2% of Python) ⚠️ Poor performance
+- **Finding:** 32 worker threads causes severe contention and poor performance
+- **Recommendation:** Avoid high thread counts; 2-4 threads per process is optimal
 
 ---
 
