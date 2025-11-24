@@ -57,8 +57,8 @@ def main():
     # Ensure results directory exists
     os.makedirs("results", exist_ok=True)
     
-    # Concurrency levels to test (limited to CPU count as requested)
-    levels = [1, 2]
+    # Test same concurrency levels as Node.js to find optimal config
+    levels = [1, 2, 4, 8, 16]
     
     with open("results/benchmark.txt", "w") as f:
         for level in levels:

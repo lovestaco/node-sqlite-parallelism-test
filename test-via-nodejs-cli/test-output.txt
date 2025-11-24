@@ -1,0 +1,10 @@
+Testing Node.js SQLite benchmark...
+
+Creating DB at test_quick.sqlite3 with 100 rows (x in [0,1000))
+Running benchmark with 2 processes × 4 threads
+Total threads: 8
+Queries per thread: 50
+Total queries: 400
+Attempting to pin processes to CPUs: [0, 1]
+
+✗ Test timed out (script is hanging)

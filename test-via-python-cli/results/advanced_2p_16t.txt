@@ -1,0 +1,34 @@
+Creating DB at test.db with 2000 rows
+
+Running benchmark:
+  Processes: 2
+  Threads per process: 16
+  Queries per thread: 62
+  Total queries: 1984
+  CPU pinning: [0, 1]
+
+--- Per-process stats ---
+Process 0:
+  Wall time: 3.1555 s
+  Queries:   992
+  QPS:       314.37
+Process 1:
+  Wall time: 3.2025 s
+  Queries:   992
+  QPS:       309.76
+
+--- Per-thread QPS (over all processes) ---
+Threads total: 32
+Min QPS:   21.43
+Median QPS:22.99
+Mean QPS:  23.48
+Max QPS:   29.11
+
+--- Global stats ---
+Total queries:        1984
+Global wall time:     3.2263 s
+Global effective QPS: 614.94
+Avg ms per query:     1.626 ms
+
+❌ Target missed. Completed in 3226ms (goal: 500ms)
+   Need to be 0.15x faster
