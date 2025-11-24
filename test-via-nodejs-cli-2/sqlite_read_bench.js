@@ -14,7 +14,13 @@ function createDb(dbPath, nRows = 2000, xRange = 1000) {
     }
 
     const db = new Database(dbPath);
-    db.pragma('journal_mode = WAL'); // better concurrent reads
+    
+    // Optimize PRAGMA settings for performance
+    db.pragma('journal_mode = WAL');
+    db.pragma('synchronous = NORMAL');
+    db.pragma('cache_size = -256000'); // Large cache
+    db.pragma('temp_store = MEMORY');
+    db.pragma('mmap_size = 1073741824'); // 1GB memory-mapped I/O
 
     db.exec(`
     CREATE TABLE table1 (
@@ -231,7 +237,7 @@ function parseArgs() {
         rows: 2000,
         xRange: 1000,
         processes: 2,
-        threadsPerProc: 16,
+        threadsPerProc: 3, // Optimized: 3 threads per process gives best performance
         queriesPerThread: 50000,
         pinCpus: false
     };

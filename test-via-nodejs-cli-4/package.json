@@ -1,0 +1,13 @@
+{
+  "name": "node-sqlite-parallelism-4",
+  "version": "1.0.0",
+  "description": "Optimized benchmark using sqlite3 (TryGhost) without worker threads",
+  "main": "sqlite_read_bench.js",
+  "scripts": {
+    "benchmark": "node sqlite_read_bench.js"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}
+

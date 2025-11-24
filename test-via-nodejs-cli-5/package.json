@@ -1,0 +1,13 @@
+{
+  "name": "node-sqlite-parallelism-5",
+  "version": "1.0.0",
+  "description": "Optimized benchmark using better-sqlite3 without worker threads",
+  "main": "sqlite_read_bench.js",
+  "scripts": {
+    "benchmark": "node sqlite_read_bench.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  }
+}
+
