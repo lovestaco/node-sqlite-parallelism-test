@@ -1,4 +1,4 @@
-const sqlite3 = require('./lib/sqlite3');
+const sqlite3 = require('sqlite3');
 const {promisify} = require('util');
 const {performance} = require('perf_hooks');
 
