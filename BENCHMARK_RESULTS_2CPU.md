@@ -13,6 +13,7 @@
 | Configuration | Total Threads | QPS | Notes |
 |---------------|----------------|-----|-------|
 | 2 proc × 16 threads | 32 | 13,207.00 | Default (32 worker threads) |
+| 2 proc × 32 threads | 64 | 13,360.46 | 64 worker threads (96.5% of optimal) |
 | 2 proc × 8 threads | 16 | 13,266.30 | |
 | 2 proc × 4 threads | 8 | 12,822.33 | |
 | **2 proc × 2 threads** | **4** | **13,851.47** | **🏆 BEST** |
@@ -37,6 +38,7 @@
 | 2 proc × 6 threads | 12 | 6,427.73 | 46.4% |
 | 2 proc × 8 threads | 16 | 5,558.84 | 40.1% |
 | **2 proc × 16 threads** | **32** | **3,699.16** | **26.7%** ⚠️ 32 worker threads |
+| **2 proc × 32 threads** | **64** | **2,068.50** | **15.5%** ⚠️⚠️ 64 worker threads - VERY POOR |
 
 **Best Configuration:** 2 proc × 2 threads = **9,686.74 QPS (69.9% of Python)**
 
@@ -54,6 +56,7 @@
 | 2 proc × 6 threads | 12 | 5,243.64 | 37.8% |
 | 2 proc × 8 threads | 16 | 4,606.68 | 33.2% |
 | **2 proc × 16 threads** | **32** | **3,218.95** | **23.2%** ⚠️ 32 worker threads |
+| **2 proc × 32 threads** | **64** | **2,068.50** | **15.5%** ⚠️⚠️ 64 worker threads - VERY POOR |
 
 **Best Configuration:** 2 proc × 1 thread = **7,803.62 QPS (56.3% of Python)**
 
@@ -115,11 +118,22 @@
 - Gap: ~30% slower than Python's optimal configuration
 - However, Node.js is still very competitive and practical
 
-### 5. 32 Worker Threads Configuration (2 proc × 16 threads)
+### 5. High Thread Count Configurations
+
+#### 32 Worker Threads (2 proc × 16 threads)
 - **Python:** 13,207.00 QPS (95.3% of optimal)
 - **cli-2 (better-sqlite3):** 3,699.16 QPS (26.7% of Python) ⚠️ Poor performance
 - **cli-3 (node-sqlite3):** 3,218.95 QPS (23.2% of Python) ⚠️ Poor performance
-- **Finding:** 32 worker threads causes severe contention and poor performance
+
+#### 64 Worker Threads (2 proc × 32 threads)
+- **Python:** 13,360.46 QPS (96.5% of optimal)
+- **cli-2 (better-sqlite3):** 2,068.50 QPS (15.5% of Python) ⚠️⚠️ VERY POOR performance
+- **cli-3 (node-sqlite3):** 1,846.33 QPS (13.8% of Python) ⚠️⚠️ VERY POOR performance
+
+**Findings:**
+- **32 threads:** 3.7x slower than optimal (cli-2)
+- **64 threads:** 4.7x slower than optimal (cli-2)
+- More threads = worse performance due to severe contention
 - **Recommendation:** Avoid high thread counts; 2-4 threads per process is optimal
 
 ---
