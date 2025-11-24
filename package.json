@@ -7,7 +7,10 @@
     "test-single": "node test-via-script_single_connection/test.js",
     "benchmark-single": "node test-via-script_single_connection/benchmark.js",
     "benchmark-threadpools": "bash test-via-script_single_connection/run-thread-pool-tests.sh",
-    "compare-single": "bash test-via-script_single_connection/compare-results.sh"
+    "compare-single": "bash test-via-script_single_connection/compare-results.sh",
+    "benchmark-n-connection": "node test-via-script_n_connection/benchmark.js",
+    "benchmark-n-threadpools": "cd test-via-script_n_connection && bash run-thread-pool-tests.sh",
+    "compare-n": "cd test-via-script_n_connection && bash compare-results.sh"
   },
   "dependencies": {
     "sqlite3": "^5.1.6"
