@@ -4,10 +4,10 @@
   "description": "Benchmark to reproduce node-sqlite3 thread pool blocking issue",
   "main": "test-via-script/test.js",
   "scripts": {
-    "test": "node test-via-script/test.js",
-    "benchmark": "node test-via-script/benchmark.js",
-    "benchmark:threadpools": "bash test-via-script/run-thread-pool-tests.sh",
-    "compare": "bash test-via-script/compare-results.sh"
+    "test-single": "node test-via-script_single_connection/test.js",
+    "benchmark-single": "node test-via-script_single_connection/benchmark.js",
+    "benchmark-threadpools": "bash test-via-script_single_connection/run-thread-pool-tests.sh",
+    "compare-single": "bash test-via-script_single_connection/compare-results.sh"
   },
   "dependencies": {
     "sqlite3": "^5.1.6"
