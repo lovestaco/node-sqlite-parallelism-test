@@ -166,3 +166,26 @@
 4. **2 processes** is optimal for all implementations
 5. **2 threads per process** is optimal for Python and better-sqlite3 with workers
 
+
+---
+
+## 6. cli-6: better-sqlite3 WITH Worker Threads (Single Process, Shared DB)
+
+**Architecture:** Single Node.js process with worker threads, each worker has its own connection to the same DB file.
+
+| Configuration | Total Threads | QPS | % of Python |
+|---------------|----------------|-----|-------------|
+| **2 threads** | **2** | **9,110.99** | **65.5%** 🏆 |
+| 4 threads | 4 | 7,632.23 | 54.9% |
+| 8 threads | 8 | 6,036.54 | 43.4% |
+| 16 threads | 16 | 4,182.75 | 30.1% |
+| 32 threads | 32 | 2,529.63 | 18.2% |
+
+**Best Configuration:** 2 threads = **9,110.99 QPS (65.5% of Python)**
+
+**Key Differences from cli-2:**
+- cli-2: Uses cluster processes + worker threads (2 processes, each with N threads)
+- cli-6: Uses only worker threads in a single process (1 process, N threads)
+- cli-6 has more contention since all threads share the same process
+- cli-2 performs better (9,687 QPS) due to process isolation
+

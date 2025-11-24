@@ -1,0 +1,13 @@
+{
+  "name": "node-sqlite-parallelism-6",
+  "version": "1.0.0",
+  "description": "Worker threads with better-sqlite3, shared DB instance",
+  "main": "sqlite_read_bench.js",
+  "scripts": {
+    "benchmark": "node sqlite_read_bench.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  }
+}
+
