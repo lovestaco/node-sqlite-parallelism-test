@@ -1,25 +1,3 @@
-
-=== Comprehensive Benchmark Comparison ===
-
---- Python CLI (Subprocess) ---
-Concurrency 1: 2000 queries in 8.533 seconds (4.266 ms/query)
-Concurrency 2: 2000 queries in 3.156 seconds (1.578 ms/query)
-
---- Node.js Single Connection ---
-CONCURRENCY= 1: 2000 queries complete in 5569 ms,  2.784 ms per SELECT, event loop utilisation=43%, median libuv thread pool queue latency = 0.392 ms
-CONCURRENCY= 2: 2000 queries complete in 3558 ms,  1.779 ms per SELECT, event loop utilisation=58%, median libuv thread pool queue latency = 3.563 ms
-CONCURRENCY= 4: 2000 queries complete in 3234 ms,  1.617 ms per SELECT, event loop utilisation=57%, median libuv thread pool queue latency = 9.666 ms
-CONCURRENCY= 8: 2000 queries complete in 3200 ms,  1.600 ms per SELECT, event loop utilisation=57%, median libuv thread pool queue latency = 21.900 ms
-CONCURRENCY=16: 2000 queries complete in 3895 ms,  1.948 ms per SELECT, event loop utilisation=55%, median libuv thread pool queue latency = 59.573 ms
-
---- Node.js Multiple Connections ---
-CONCURRENCY= 1: 2000 queries complete in 5215 ms,  2.607 ms per SELECT, event loop utilisation=42%, median libuv thread pool queue latency = 0.390 ms
-CONCURRENCY= 2: 2000 queries complete in 2033 ms,  1.016 ms per SELECT, event loop utilisation=77%, median libuv thread pool queue latency = 1.885 ms
-CONCURRENCY= 4: 2000 queries complete in 1707 ms,  0.854 ms per SELECT, event loop utilisation=96%, median libuv thread pool queue latency = 4.842 ms
-CONCURRENCY= 8: 2000 queries complete in 1589 ms,  0.794 ms per SELECT, event loop utilisation=99%, median libuv thread pool queue latency = 10.197 ms
-CONCURRENCY=16: 2000 queries complete in 1669 ms,  0.835 ms per SELECT, event loop utilisation=100%, median libuv thread pool queue latency = 26.040 ms
-
-lovestaco@i3nux-mint:~/pers/node-sqlite-parallelism$ bash compare-all-results.sh
 === Comprehensive Benchmark Comparison ===
 
 --- Python CLI (Subprocess) ---
