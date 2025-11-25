@@ -33,6 +33,9 @@ function createDb(dbPath, nRows = 2000, xRange = 1000) {
     )
   `);
 
+    // Create covering index for index-only scans on id
+    db.exec('CREATE INDEX idx_id_covering ON table1(id, a, b, c, d)');
+
     const insert = db.prepare('INSERT INTO table1 (x, a, b, c, d) VALUES (?, ?, ?, ?, ?)');
 
     const insertMany = db.transaction((rows) => {
@@ -49,6 +52,11 @@ function createDb(dbPath, nRows = 2000, xRange = 1000) {
     }
 
     insertMany(rows);
+    
+    // Analyze table for query optimizer
+    db.exec('ANALYZE table1');
+    db.pragma('optimize');
+    
     db.close();
 }
 
@@ -67,7 +75,7 @@ function setCpuAffinity(cpuIndex) {
 
 // ------------------------ PROCESS WORKER ------------------------ //
 
-async function processWorker(procIndex, dbPath, xRange, threadsPerProc, queriesPerThread, cpuIndex) {
+async function processWorker(procIndex, dbPath, nRows, threadsPerProc, queriesPerThread, cpuIndex) {
     if (cpuIndex !== null) {
         setCpuAffinity(cpuIndex);
     }
@@ -80,7 +88,7 @@ async function processWorker(procIndex, dbPath, xRange, threadsPerProc, queriesP
     for (let i = 0; i < threadsPerProc; i++) {
         const promise = new Promise((resolve, reject) => {
             const worker = new Worker(path.join(__dirname, 'worker.js'), {
-                workerData: { dbPath, xRange, queriesPerThread }
+                workerData: { dbPath, idRange: nRows, queriesPerThread }
             });
 
             worker.on('message', (result) => {
@@ -116,7 +124,7 @@ async function processWorker(procIndex, dbPath, xRange, threadsPerProc, queriesP
 // ------------------------ MAIN / ORCHESTRATION ------------------------ //
 
 async function runBenchmark(dbPath, nRows, xRange, processes, threadsPerProc, queriesPerThread, pinCpus) {
-    console.log(`Creating DB at ${dbPath} with ${nRows} rows (x in [0,${xRange}))`);
+    console.log(`Creating DB at ${dbPath} with ${nRows} rows (id in [1,${nRows}])`);
     createDb(dbPath, nRows, xRange);
 
     const cpuIndices = pinCpus ? Array.from({ length: processes }, (_, i) => i) : Array(processes).fill(null);
@@ -134,7 +142,7 @@ async function runBenchmark(dbPath, nRows, xRange, processes, threadsPerProc, qu
 
     if (processes === 1) {
         // Single process mode - run directly
-        const result = await processWorker(0, dbPath, xRange, threadsPerProc, queriesPerThread, cpuIndices[0]);
+        const result = await processWorker(0, dbPath, nRows, threadsPerProc, queriesPerThread, cpuIndices[0]);
         results.push(result);
     } else {
         // Multi-process mode using cluster
@@ -146,7 +154,7 @@ async function runBenchmark(dbPath, nRows, xRange, processes, threadsPerProc, qu
                 const worker = cluster.fork({
                     PROC_INDEX: i,
                     DB_PATH: dbPath,
-                    X_RANGE: xRange,
+                    N_ROWS: nRows,
                     THREADS_PER_PROC: threadsPerProc,
                     QUERIES_PER_THREAD: queriesPerThread,
                     CPU_INDEX: cpuIndices[i]
@@ -217,12 +225,12 @@ if (!cluster.isPrimary && process.env.PROC_INDEX !== undefined) {
     (async () => {
         const procIndex = parseInt(process.env.PROC_INDEX);
         const dbPath = process.env.DB_PATH;
-        const xRange = parseInt(process.env.X_RANGE);
+        const nRows = parseInt(process.env.N_ROWS);
         const threadsPerProc = parseInt(process.env.THREADS_PER_PROC);
         const queriesPerThread = parseInt(process.env.QUERIES_PER_THREAD);
         const cpuIndex = process.env.CPU_INDEX !== 'null' ? parseInt(process.env.CPU_INDEX) : null;
 
-        const result = await processWorker(procIndex, dbPath, xRange, threadsPerProc, queriesPerThread, cpuIndex);
+        const result = await processWorker(procIndex, dbPath, nRows, threadsPerProc, queriesPerThread, cpuIndex);
         process.send(result);
         process.exit(0);
     })();
@@ -252,7 +260,7 @@ function parseArgs() {
                 break;
             case '--x-range':
                 options.xRange = parseInt(args[++i]);
-                break;
+                break; // Still used for data generation, but queries use id
             case '--processes':
                 options.processes = parseInt(args[++i]);
                 break;
@@ -272,9 +280,9 @@ SQLite3 concurrent read performance benchmark (Node.js)
 Options:
   --db-path <path>           Path to SQLite file (will be overwritten) [default: test_reads.sqlite3]
   --rows <n>                 Number of rows to insert [default: 2000]
-  --x-range <n>              Random x range: [0, x_range) [default: 1000]
+  --x-range <n>              Random x range for data generation [default: 1000] (queries use id)
   --processes <n>            Number of worker processes [default: 2]
-  --threads-per-proc <n>     Number of threads per process [default: 16]
+  --threads-per-proc <n>     Number of threads per process [default: 3]
   --queries-per-thread <n>   Queries each thread will execute [default: 50000]
   --pin-cpus                 Best-effort: pin each process to a separate CPU
   --help                     Show this help message

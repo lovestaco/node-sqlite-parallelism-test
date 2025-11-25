@@ -2,7 +2,7 @@
 const { parentPort, workerData } = require('worker_threads');
 const Database = require('better-sqlite3');
 
-const { dbPath, xRange, queriesPerThread } = workerData;
+const { dbPath, idRange, queriesPerThread } = workerData;
 
 // Open database with optimized settings
 const db = new Database(dbPath, { 
@@ -19,18 +19,20 @@ db.pragma('mmap_size = 1073741824'); // 1GB memory-mapped I/O
 db.pragma('query_only = 1'); // Read-only optimization
 
 // Prepare statement once - reuse for all queries
-const stmt = db.prepare('SELECT a, b, c, d FROM table1 WHERE x = ?');
+// Query by id (primary key) with covering index for index-only scans
+const stmt = db.prepare('SELECT a, b, c, d FROM table1 WHERE id = ?');
 
-// Generate all random values upfront to avoid random() overhead in loop
-const xVals = [];
+// Generate all random id values upfront to avoid random() overhead in loop
+// id range is 1 to idRange (inclusive)
+const idVals = [];
 for (let i = 0; i < queriesPerThread; i++) {
-    xVals.push(Math.floor(Math.random() * xRange));
+    idVals.push(Math.floor(Math.random() * idRange) + 1); // id starts at 1
 }
 
 const t0 = performance.now();
 // Execute all queries
-for (const xVal of xVals) {
-    stmt.all(xVal);
+for (const idVal of idVals) {
+    stmt.all(idVal);
 }
 const t1 = performance.now();
 
